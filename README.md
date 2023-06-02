@@ -65,7 +65,6 @@ Recursive, using a relative:
 
 Branch levels: 4
 
-
 Number of nodes in each branch level:
 
 	Level 0: 1       (The seed)
@@ -75,9 +74,7 @@ Number of nodes in each branch level:
 	Level 4: 105,000 (5*100*7*30) (Leaves)
 
 
-Total number of nodes in each tree level:
-
-
+Total number of nodes in each branch level:
 
 	Level 0: 105,001  (1 + 5 * 100 * 7 * 30)    (The seed)
 	Level 1: 21,001   (1 + 100 * 7 * 30)
