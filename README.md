@@ -1,31 +1,39 @@
 # Tree
 -------------------------------------
 
-Tree is a digest tree designed for one-way deterministic data structures based
-on a single seed.  Resulting branch digests are not cryptographically related as
-one branch cannot be used to calculate the value of another branch. Tree is a
-recursive datastructure and a tree may contain other trees.  A digest tree
-travel direction is opposite to a Merkel tree; instead of from the leaves up to
-a root, a digest tree travels from a seed to the leaves.
+Package tree constructs a digest tree designed for one-way deterministic data
+structures based on a single seed.  The unique property of digest tree is that
+although branch digests are cryptographically related to a parent seed, the
+branches themselves cannot be used to calculate the value of another branch
+unless the parent seed is disclosed.  Sibling branches appear cryptographically
+unrelated and branches are unaware of the parent tree and peers unless
+disclosed.
 
-This data structure is a "digest tree" and not a "hash tree" because the digest
-value is utilized. If needing further specificity, we've considered dubbing this
+Tree is a recursive datastructure.  A tree may contain other children trees and
+infinite children may be calculated from a single seed. A digest tree travels
+from the seed to the leaves which is opposite to a Merkel tree which travels
+from leaves to a root.  
+
+This data structure is a digest tree and not a hash tree as the digest value is
+utilized. If needing further specificity we've considered dubbing this
 particular form a "lightning digest" tree due to the jagged stair step and
 branching shape of the structure.
 
 ### Naming
-The **seed** is a single digest used to generate the tree, "the trunk".   A
-**branch** is a tree that's made from the digest of a parent seed.  A branch
-with no recursions is a **leaf** (a branch with inner tree size 0 is a leaf).
-All "seeds", "branches" and "leaves" are **nodes**.
+A **seed** is a single digest used to generate the tree.   A **branch** is a
+tree made from the digest of a parent seed.  A branch with no recursions is a
+**leaf** (a branch with inner tree size of 0 is a leaf). Seeds, branches and
+leaves are **nodes**.  Trees that are produced from a **parent** tree are
+**children** trees.  Branches that share a common parent are siblings.  
 
-Since tree is recursive, many of the terms are relative.  Where one tree may
-term a digest "seed", from the perspective of a different tree, the "seed" may
-also be a "leaf".  
+Terms are relative since tree is recursive.  While not considering a parent,
+relative to itself a branch's digest is a seed.  Where one tree may term a
+digest a seed, but from the parent tree's perspective that seed is a branch. For
+a tree of size 1, the seed is a branch and a leaf.  
 
-**Depth sizes** denote how large each branch level is from a starting seed.  See
+**Depth sizes** denotes how large each branch level is from a starting seed. See
 the example below for depth sizes of `[5,100,7,30]`.  Depth sizes is ordered
-from the trunk to the leaves.  
+from the trunk to the leaves.  This library assumes symmetrical trees.  
  
 
 ### Structure
