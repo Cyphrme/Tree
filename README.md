@@ -59,7 +59,7 @@ Recursive, using a relative:
 	├─(S||byte 1)──► S1 ─(S1)─► S1.ID
 	│                │
 	│                ├─(S1||byte 0)──► S1.0
-	...             ...
+	...              ...
 
 ### Example: Depth sizes [5,100,7,30]
 
@@ -77,11 +77,13 @@ Number of nodes in each branch level:
 
 Total number of nodes in each tree level:
 
-	Level 0: 1       (The seed)
-	Level 1: 6       (1 + 5)
-	Level 2: 506     (1 + 5 + 500)
-	Level 3: 4,006   (1 + 5 + 500 + 3,500)
-	Level 4: 109,006  (1 + 5 + 500 + 3,500 + 105,000) 
+
+
+	Level 0: 105,001  (1 + 5 * 100 * 7 * 30)    (The seed)
+	Level 1: 21,001   (1 + 100 * 7 * 30)
+	Level 2: 211      (1 + 7 * 30)
+	Level 3: 31       (1 + 30)
+	Level 4: 1        (1)                       (Leaf)
 
 
 
