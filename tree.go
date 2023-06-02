@@ -261,16 +261,16 @@ type B64Map map[coze.SB64][]coze.B64
 
 // MarshalJSON implements json.Marshaler.
 func (t B64Map) MarshalJSON() ([]byte, error) {
-	var s = "{"
-	var i = 0
-	var l = len(t)
+	i := 0
+	l := len(t)
+	s := "{"
 	for k, v := range t {
 		i++
 		vj, err := coze.Marshal(v)
 		if err != nil {
 			return nil, err
 		}
-		s += "\"" + fmt.Sprint(k) + "\":" + string(vj)
+		s += `"` + fmt.Sprint(k) + `":` + string(vj)
 		if i != l {
 			s += ","
 		}
