@@ -26,14 +26,14 @@ tree made from the digest of a parent seed.  A branch with no recursions is a
 leaves are **nodes**.  Trees that are produced from a **parent** tree are
 **children** trees.  Branches that share a common parent are siblings.  
 
-Terms are relative since tree is recursive.  While not considering a parent,
-relative to itself a branch's digest is a seed.  Where one tree may term a
-digest a seed, but from the parent tree's perspective that seed is a branch. For
-a tree of size 1, the seed is a branch and a leaf.  
+Terms are relative since tree is recursive.  Without considering a parent,
+relative to itself, a branch's digest is a seed.  While one tree may term a
+digest a seed, but from the parent tree's perspective, that seed is a branch.
+For a tree of size 1, the seed is a branch and a leaf.  
 
 **Depth sizes** denotes how large each branch level is from a starting seed. See
-the example below for depth sizes of `[5,100,7,30]`.  Depth sizes is ordered
-from the trunk to the leaves.  This library assumes symmetrical trees.  
+the example below for depth sizes of `[5,100,7,30]`.  Depth sizes are ordered
+from the seed to the leaves.  This library assumes symmetrical trees.  
  
 
 ### Structure
