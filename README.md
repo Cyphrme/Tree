@@ -106,7 +106,6 @@ be disclosed, which does not allow the agent in possession of the ticket roll to
 calculate the contained tickets.  
 
 
-
 ----------------------------------------------------------------------
 # Attribution, Trademark notice, and License
 DigestTree is released under The 3-Clause BSD License. 

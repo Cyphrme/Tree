@@ -64,9 +64,10 @@ type Tree struct {
 	Skip int `json:"skip,omitempty"`
 
 	PathCalc bool       `json:"path_calc,omitempty"`
-	Paths    B64MapP    `json:"paths,omitempty"`    // Seed (private) paths.
-	Leaves   []coze.B64 `json:"leaves,omitempty"`   // Leaves in this tree down.
-	IDPaths  B64MapP    `json:"id_paths,omitempty"` // Like Paths, except with ID's as map keys.
+	Paths    B64MapP    `json:"paths,omitempty"`     // (Private) Seed paths.
+	PathsID  B64MapP    `json:"paths_id,omitempty"`  // (Public)  Paths except with ID's as map keys.
+	Leaves   []coze.B64 `json:"leaves,omitempty"`    // (Pirvate) Leaves in this tree down.
+	LeavesID []coze.B64 `json:"leaves_id,omitempty"` // (Public)  Leaf IDs in this tree down. // TODO
 
 	// Stats and internal variables.
 	TotalLeaves    *int `json:"-"` // For whole tree, up and down. (Breaks one-way design pattern)
@@ -122,6 +123,16 @@ func (t *Tree) Populate() (err error) {
 			}
 		}
 	}
+
+	t.LeavesID = make([]coze.B64, 0, len(t.Leaves)) // Preallocate for performance.
+	for _, v := range t.Leaves {                    // TODO use []*[]coze.B64 for memory/processing efficiency.
+		id, err := Identity(t.Alg, v)
+		if err != nil {
+			return err
+		}
+		t.LeavesID = append(t.LeavesID, id)
+	}
+
 	return t.CalcPathsID()
 }
 
@@ -187,7 +198,7 @@ func (t *Tree) CalcPathsID() (err error) {
 	if !t.PathCalc {
 		return
 	}
-	t.IDPaths = make(B64MapP)
+	t.PathsID = make(B64MapP)
 	for k, v := range t.Paths {
 		kid, err := Identity(t.Alg, coze.B64(k))
 		if err != nil {
@@ -203,7 +214,7 @@ func (t *Tree) CalcPathsID() (err error) {
 			pathsId = append(pathsId, vid)
 		}
 
-		t.IDPaths[coze.SB64(kid)] = &pathsId
+		t.PathsID[coze.SB64(kid)] = &pathsId
 	}
 	return nil
 }
@@ -234,12 +245,12 @@ func intToBytesLE(i uint64) []byte {
 	return b[:n]
 }
 
-// NewTreePopulated is a helper function for making trees.
-func NewTreePopulated(alg coze.HshAlg, seed coze.B64, size []int) (*Tree, error) {
+// NewTreePopulated is a simple helper for making trees.
+func NewTreePopulated(alg coze.HshAlg, seed coze.B64, depthSizes []int) (*Tree, error) {
 	t := Tree{
 		Alg:        alg,
 		Seed:       seed,
-		DepthSizes: size,
+		DepthSizes: depthSizes,
 	}
 	err := t.Populate()
 	return &t, err

@@ -62,10 +62,8 @@ func ExampleTree_Populate() {
 	// }
 }
 
-// ExampleTree_PathCalc tests calculating paths.  Note that this test cannot use
-// print the struct for output testing since maps are unordered.  I'm not sure
-// why https://tip.golang.org/doc/go1.12#fmt isn't applying.
-func ExampleTree_PathCalc() {
+// ExampleTree_PathCalc_len tests calculating paths.
+func ExampleTree_PathCalc_len() {
 	t := Tree{
 		Alg:        coze.SHA256,
 		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
@@ -74,10 +72,10 @@ func ExampleTree_PathCalc() {
 	}
 	t.Populate()
 
-	fmt.Printf("Paths: %d, Leaves: %d", len(t.Paths), len(t.Leaves))
+	fmt.Printf("Paths: %d, PathsID %d, Leaves: %d, LeavesID: %d", len(t.Paths), len(t.PathsID), len(t.Leaves), len(t.LeavesID))
 
 	// Output:
-	// Paths: 7, Leaves: 4
+	// Paths: 7, PathsID 7, Leaves: 4, LeavesID: 4
 }
 
 func Example_big() {
@@ -139,7 +137,6 @@ func Example_big() {
 
 func Example_max() {
 	max := 3
-
 	t := Tree{
 		Alg:            coze.SHA256,
 		Seed:           coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
@@ -222,7 +219,7 @@ func ExampleB64Map_jsonMarshal() {
 	// }
 }
 
-// ExampleB64Map_jsonUnmarshal tests JSON unmarshalling.  Only one key is
+// ExampleB64Map_jsonUnmarshal tests B64Map JSON unmarshalling.  Only one key is
 // unmarshalled since Go maps are unordered and the test uses a static string.
 func ExampleB64Map_jsonUnmarshal() {
 	sB64Map := `{
@@ -241,6 +238,48 @@ func ExampleB64Map_jsonUnmarshal() {
 
 	// Output:
 	// &map[UnBNTTRfbFU2akNqM2FzWkV0SUZ5WXFQakMyTDZtbHVjbDdWR012QXVubw:[RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno zVzgRU3WFpnrlVJAnI4ZU1Od4Agl5Zd4jIP79oubOW0]]
+}
+
+// ExampleTree_jsonUnmarshal tests tree JSON unmarshalling.
+func ExampleTree_jsonUnmarshal() {
+	// Generate the following using:
+	// ts, _ := NewTreePopulated(coze.SHA256, coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"), []int{1, 2})
+	tb := []byte(`{
+    "alg": "SHA-256",
+    "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
+    "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
+    "depth_sizes": [
+        1,
+        2
+    ],
+    "branches": [
+        "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4"
+    ],
+    "children": [
+        {
+            "alg": "SHA-256",
+            "seed": "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4",
+            "id": "FBrxbr4wZPHuGyM2Nl7gzoZTfZ-oLQP4pwKBpDxIIb0",
+            "depth_sizes": [
+                2
+            ],
+            "branches": [
+                "0RJw1SSIXkrW3SID6eoANHq7Y1gB6ZNKo0nuC8pL_qM",
+                "yZJ4i_WzjbPHrbczNt2AW-zk1mDJE77ps98jN9fYaFA"
+            ]
+        }
+    ]
+}`)
+	t := new(Tree)
+	err := json.Unmarshal(tb, t)
+	if err != nil {
+		panic(err)
+	}
+	ts := fmt.Sprintf("%s", t)
+	fmt.Println(string(tb) == ts)
+
+	// Output:
+	//true
 }
 
 func ExampleNewTreePopulated_branches() {
