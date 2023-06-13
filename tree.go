@@ -9,9 +9,10 @@ import (
 
 // See tree/README.md documentation.
 //
+// Recursive options are only populated if the currently branch level is not
+// leaves and contains a deeper level.
+//
 // # Structure Variables
-// Recursive options are only populated if the currently
-// branch level is not leaves and contains a deeper level.
 //
 // Alg: Hashing algorithm used for creating the tree.
 //
@@ -29,31 +30,41 @@ import (
 // the tree, Branches are the leaves for that tree.  Branches does not include
 // children branches.
 //
+// Skip: Optional starting position for the first level.  Populates tree
+// starting at this position.
+//
+// PathCalc:  If true, Paths, PathsID, Leaves, and LeavesID are calculated.
+//
+// Paths: ("Private") The tree path (all branches above) for all nodes.  All
+// leaves in a branch share the same Path. Both keys and values are seeds.
+// Object of keys as string, values as []B64 of path, e.g.  "paths": {"77Jo...":
+// ["0RJw..."],
+//
+// PathsID: ("Public") Like paths except uses ID's as the keys and values.
+//
+// Leaves: ("Private") A slice of leaves (their seeds) in this tree down.  Only
+// calculated if LeafPathCalc.
+//
+// LeavesID: ("Public") Like Leaves except uses ID's as the keys and values.
+//
+// ## Stats and Internal Variables
+//
+// TotalLeaves: (Breaks one-way design pattern) Number of leaves currently
+// populated in the whole tree, including "skip".  (Children trees
+// `TreeTotalLeaves` will be parent tree's `TreeTotalLeaves` as well.) Leaves
+// are the last branch with no children.
+//
+// MaxTotalLeaves: (Breaks one-way design pattern) Normally left empty.  Total
+// leaves in the whole tree. (recursive data structure).  If DepthTotalLeaves is
+// empty, when using DepthSizes each branch will be populated fully based on the
+// last DepthSize.
+//
+// ## Children
+//
 // Children: Recursive tree.  Each digest in "Branch" is the key for the tree in
 // "BranchTree" on a one to one basis.  Note that the "public" value for the
 // branch is used for the generation of a child tree, and thus becomes "private"
 // from that perspective.
-//
-// Skip: Optional starting position for the first level.  Populates tree
-// starting at this position.
-//
-// MaxTotalLeaves: Normally left empty.  Total leaves in the whole tree.
-// (recursive data structure).  If DepthTotalLeaves is empty, when using
-// DepthSizes each branch will be populated fully based on the last DepthSize.
-//
-// TotalLeaves: Number of leaves currently populated in the whole tree,
-// including "skip".  (Children trees `TreeTotalLeaves` will be parent tree's
-// `TreeTotalLeaves` as well.) Leaves are the last branch with no children.
-//
-// PathCalc:  If true, Paths, Leaves, and IDPaths are calculated.
-//
-// Paths: The tree path (all branches above) for all nodes.  All leaves in a
-// branch share the same Path.
-//
-// Leaves: A slice of leaves in the tree down.  Only calculated if LeafPathCalc.
-// Leaves are "private" like seed and branch.  Use Identity for "public" ID.
-//
-// IDPaths: Like paths, except using ID's as the keys and values.
 type Tree struct {
 	Alg        coze.HshAlg `json:"alg"`
 	Seed       coze.B64    `json:"seed"`
@@ -64,14 +75,14 @@ type Tree struct {
 	Skip int `json:"skip,omitempty"`
 
 	PathCalc bool       `json:"path_calc,omitempty"`
-	Paths    B64MapP    `json:"paths,omitempty"`     // (Private) Seed paths.
-	PathsID  B64MapP    `json:"paths_id,omitempty"`  // (Public)  Paths except with ID's as map keys.
-	Leaves   []coze.B64 `json:"leaves,omitempty"`    // (Pirvate) Leaves in this tree down.
-	LeavesID []coze.B64 `json:"leaves_id,omitempty"` // (Public)  Leaf IDs in this tree down. // TODO
+	Paths    B64MapP    `json:"paths,omitempty"`
+	PathsID  B64MapP    `json:"paths_id,omitempty"`
+	Leaves   []coze.B64 `json:"leaves,omitempty"`
+	LeavesID []coze.B64 `json:"leaves_id,omitempty"`
 
 	// Stats and internal variables.
-	TotalLeaves    *int `json:"-"` // For whole tree, up and down. (Breaks one-way design pattern)
-	MaxTotalLeaves *int `json:"-"` // For whole tree, up and down. (Breaks one-way design pattern)
+	TotalLeaves    *int `json:"-"` // For whole tree, up and down.
+	MaxTotalLeaves *int `json:"-"` // For whole tree, up and down.
 
 	// Recursive struct variable.  Last position in for easier reading.
 	Children []*Tree `json:"children,omitempty"`
@@ -91,8 +102,8 @@ func (t *Tree) Populate() (err error) {
 	if err != nil {
 		return err
 	}
-	// Recursive tree structure. Edge of current (parent) tree.
-	if len(t.DepthSizes) > 1 {
+
+	if len(t.DepthSizes) > 1 { // Recursive tree.
 		t.Children = make([]*Tree, t.DepthSizes[0])
 		for i := 0; i < t.DepthSizes[0]; i++ {
 			tt := new(Tree)
@@ -104,19 +115,15 @@ func (t *Tree) Populate() (err error) {
 			tt.PathCalc = t.PathCalc
 
 			err = tt.Populate()
-			//fmt.Printf("tt paths: %v\n", tt.Paths)
 			if err != nil {
 				return err
 			}
 			t.Children[i] = tt
 
 			if t.PathCalc {
-				// fmt.Printf("Edge of tree %+v\n", tt.Leaves)
 				t.Leaves = append(t.Leaves, tt.Leaves...) // Add leaves from branch to parent's leaves.
-
-				// Add parent to each child's path.
-				ps := []coze.B64{t.Seed}
-				for k, v := range tt.Paths { // TODO need to make new unique paths, not all paths.(Use the pointer)
+				ps := []coze.B64{t.Seed}                  // Add parent to each child's path.
+				for k, v := range tt.Paths {              // TODO need to make new unique paths, not all paths.(Use the pointer)
 					paths := append(ps, *v...)
 					t.Paths[k] = &paths
 				}
@@ -136,9 +143,9 @@ func (t *Tree) Populate() (err error) {
 	return t.CalcPathsID()
 }
 
-// GenTreeBranches generates a slice of digests from a seed digest for the current
-// level (non-recursive).  See notes on "Tree". Resulting digests are not
-// cryptographically related.
+// GenTreeBranches generates a slice of digests from a seed digest for the
+// current level (non-recursive).  See notes on "Tree". Resulting digests are
+// not cryptographically related.
 //
 // Skip is the starting position for the main trunk (should typically be 0).
 //

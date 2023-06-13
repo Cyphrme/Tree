@@ -36,9 +36,15 @@ from the seed to the leaves.  This library assumes symmetrical trees.
  
 
 ### Structure
+Input seed is a random number of the same size as the digest algorithm's output.
+The identity (id) of the seed is the digest of the seed.  Branch digests are
+calculated by appending a sequential nonce, e.g. byte 0, byte 1, ..., to the
+seed and hashing.  Because a sequential nonce is used, any branch can quickly be
+calculated by position in the tree.  
+
 The digest calculation step appends an integer encoded as little endian byte(s),
-the least significant byte is to the left, denoting branch number. Note that the
-"Identity" of the seed is not apart of the branch.
+the least significant byte is to the left, denoting branch number. Also note
+that the identity of the seed is not apart of the branch.
 
 	S ─(S)────────► ID
 	│

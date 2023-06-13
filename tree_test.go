@@ -71,11 +71,19 @@ func ExampleTree_PathCalc_len() {
 		PathCalc:   true,
 	}
 	t.Populate()
-
-	fmt.Printf("Paths: %d, PathsID %d, Leaves: %d, LeavesID: %d", len(t.Paths), len(t.PathsID), len(t.Leaves), len(t.LeavesID))
-
+	fmt.Printf("Paths: %d, PathsID %d, Leaves: %d, LeavesID: %d\n", len(t.Paths), len(t.PathsID), len(t.Leaves), len(t.LeavesID))
+	t = Tree{
+		Alg:        coze.SHA256,
+		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		DepthSizes: []int{2},
+		PathCalc:   true,
+	}
+	t.Populate()
+	fmt.Printf("Paths: %d, PathsID %d, Leaves: %d, LeavesID: %d\n", len(t.Paths), len(t.PathsID), len(t.Leaves), len(t.LeavesID))
+	//fmt.Println(t)
 	// Output:
 	// Paths: 7, PathsID 7, Leaves: 4, LeavesID: 4
+	// Paths: 2, PathsID 2, Leaves: 2, LeavesID: 2
 }
 
 func Example_big() {
