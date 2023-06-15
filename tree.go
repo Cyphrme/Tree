@@ -70,9 +70,9 @@ type Tree struct {
 	Seed       coze.B64    `json:"seed"`
 	ID         coze.B64    `json:"id"`
 	DepthSizes []int       `json:"depth_sizes,omitempty"`
-	Branches   []coze.B64  `json:"branches,omitempty"`
 
-	Skip int `json:"skip,omitempty"`
+	Skip     int        `json:"skip,omitempty"`
+	Branches []coze.B64 `json:"branches,omitempty"`
 
 	PathCalc bool       `json:"path_calc,omitempty"`
 	Paths    B64MapP    `json:"paths,omitempty"`
@@ -169,17 +169,17 @@ func (t *Tree) GenTreeBranches() (err error) {
 		t.TotalLeaves = new(int)
 		*t.TotalLeaves = t.Skip
 	}
-	t.Branches = make([]coze.B64, t.DepthSizes[0])
+	t.Branches = make([]coze.B64, t.DepthSizes[0]-t.Skip)
 	t.Paths = make(B64MapP)
 	path := &[]coze.B64{t.Seed} // All leaves in a branch share the same Path (a pointer).  Leaves don't make a new LeafPath.
 
-	for i := t.Skip; i < len(t.Branches); i++ {
+	for i := 0; i < len(t.Branches); i++ {
 		//fmt.Printf("Current Leaves: %d\n", *t.TreeTotalLeaves)
 		if t.MaxTotalLeaves != nil && *t.TotalLeaves == *t.MaxTotalLeaves { // Max condition
 			return nil
 		}
 
-		node, err := Branch(t.Alg, t.Seed, i)
+		node, err := Branch(t.Alg, t.Seed, i+t.Skip)
 		if err != nil {
 			return err
 		}
@@ -237,19 +237,38 @@ func Identity(alg coze.HshAlg, b coze.B64) (coze.B64, error) {
 // of this branch function is the "branch seed", which is the leaf at the tip of
 // the tree.
 func Branch(alg coze.HshAlg, dig coze.B64, i int) (coze.B64, error) {
-	return coze.Hash(alg, append(dig, intToBytesLE(uint64(i))...))
+	return coze.Hash(alg, append(dig, IntToBytesBE(uint64(i))...))
 }
 
-// intToBytesLE is like binary.LittleEndian.PutUint64 except it does not include
-// empty bytes.
-func intToBytesLE(i uint64) []byte {
-	b := make([]byte, 8)
-	binary.LittleEndian.PutUint64(b, i)
+// IntToBytesLE is like binary.LittleEndian.PutUint64 except it does not include
+// empty padding bytes and always returns at least one byte.   (Empty padding
+// bytes on right, e.g. decimal 65,536 is [0 0 1].) As currently written, it
+// only supports numbers up to 2^64 (18,446,744,073,709,551,615) which is the
+// max value for uint64.
+func IntToBytesLE(i uint64) []byte {
 	n := 8
+	b := make([]byte, n)
+	binary.LittleEndian.PutUint64(b, i)
 	for n > 1 && b[n-1] == 0 {
 		n--
 	}
 	return b[:n]
+}
+
+// IntToBytesBE is like binary.BigEndian.PutUint64 except it does not include
+// empty padding bytes and always returns at least one byte.  (Empty padding
+// bytes on left, e.g. decimal 65,536 is bytes [1 0 0].) As currently written,
+// it only supports numbers up to 2^64 (18,446,744,073,709,551,615) which is the
+// max value for uint64.
+func IntToBytesBE(i uint64) []byte {
+	n := 8
+	b := make([]byte, n)
+	binary.BigEndian.PutUint64(b, i)
+	j := 0
+	for j < n-1 && b[j] == 0 {
+		j++
+	}
+	return b[j:]
 }
 
 // NewTreePopulated is a simple helper for making trees.

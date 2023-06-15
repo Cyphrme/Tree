@@ -10,7 +10,7 @@ seed is disclosed.
 
 Tree is a recursive datastructure.  A tree may contain other children trees and
 infinite children may be calculated from a single seed. A digest tree travels
-from the seed to the leaves which is opposite to a Merkel tree which travels
+from the seed to the leaves which is opposite to a Merkle tree which travels
 from leaves to a root.  
 
 This data structure is a digest tree and not a hash tree as the digest value is
@@ -36,15 +36,10 @@ from the seed to the leaves.  This library assumes symmetrical trees.
  
 
 ### Structure
-Input seed is a random number of the same size as the digest algorithm's output.
-The identity (id) of the seed is the digest of the seed.  Branch digests are
-calculated by appending a sequential nonce, e.g. byte 0, byte 1, ..., to the
-seed and hashing.  Because a sequential nonce is used, any branch can quickly be
-calculated by position in the tree.  
-
-The digest calculation step appends an integer encoded as little endian byte(s),
-the least significant byte is to the left, denoting branch number. Also note
-that the identity of the seed is not apart of the branch.
+Input seed is a random number of the same size as the digest algorithm's output,
+termed the hash size. The identity (id) of the seed is the digest of the seed.
+Branch digests are calculated by appending a sequential nonce, encoded as big
+endian bytes(s), to the seed and hashing.  
 
 	S ─(S)────────► ID
 	│
@@ -52,8 +47,11 @@ that the identity of the seed is not apart of the branch.
 	│
 	├─(S||byte 1)─► S1 (Branch Digest 1)
 	│
-	├─(S||2)──────► S2
+	├─(S||byte 2)─► S2 (Branch Digest 2)
 	...
+	├─(S||byte 255) ───────► S255 (Branch Digest 255)
+	│
+	├─(S||byte 1||byte 0) ─► S256 (Branch Digest 256)
 
 Recursive:
 
@@ -70,6 +68,10 @@ Recursive:
 	│                │
 	│                ├─(S1||0)──► S1.0
 	...              ...
+
+Because the nonce is sequential, any branch can quickly be calculated by
+position in the tree.   Note that the identity of the seed is not apart of the
+branch.
 
 ### Example: Depth sizes [5,100,7,30]
 
@@ -110,6 +112,29 @@ tickets.  A ticket roll may have it's private seed disclosed, so the agent in
 possession can calculate it's own tickets, or only the ticket roll seed id could
 be disclosed, which does not allow the agent in possession of the ticket roll to
 calculate the contained tickets.  
+
+
+# Significand and Endianness
+The digest calculation step appends an integer, a nonce denoting branch number,
+encoded as big endian byte(s), e.g. byte 0, byte 1, etc.  The minimal number of
+bytes needed to encode the nonce are the **significand bytes**.  Only the
+significand bytes are valid, and non-significand bytes, named padding bytes, are
+invalid. 
+
+Big endian has the most significant byte is to the left. As is typical byte
+paradigm binary counting, at the 255 and 256 bit boundary, an additional byte is
+needed to represent 256, and additional bytes needed for each boundary
+thereafter. For big endian, preceding zero'd bytes, that is bytes on the left,
+are padding bytes.  This is the same as decimal integers where padding precedes the
+significand.  
+
+Little endian has the least significant byte is to the left. As is typical
+byte paradigm binary counting, at the 255 and 256 bit boundary.  An additional
+byte is needed to represent 256, and additional bytes needed for each boundary
+thereafter. For little endian, succeeding zero'd bytes, that is bytes are on the
+right, are invalid.  This is opposite to decimal integers where padding precedes the
+significand.  
+
 
 
 ----------------------------------------------------------------------

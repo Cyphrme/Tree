@@ -7,22 +7,22 @@ import (
 	"github.com/cyphrme/coze"
 )
 
-func Example_intToBytesLE() {
+func Example_IntToBytesLE() {
 	// Byte one boundary
-	fmt.Printf("0:%b\n", intToBytesLE(0))
-	fmt.Printf("1:%b\n", intToBytesLE(1))
-	fmt.Printf("2:%b\n", intToBytesLE(2))
+	fmt.Printf("0:%b\n", IntToBytesLE(0))
+	fmt.Printf("1:%b\n", IntToBytesLE(1))
+	fmt.Printf("2:%b\n", IntToBytesLE(2))
 	// Byte two boundary
-	fmt.Printf("255:%b\n", intToBytesLE(255))
-	fmt.Printf("256:%b\n", intToBytesLE(256))
-	fmt.Printf("257:%b\n", intToBytesLE(257))
-	fmt.Printf("257:%b\n", intToBytesLE(258))
+	fmt.Printf("255:%b\n", IntToBytesLE(255))
+	fmt.Printf("256:%b\n", IntToBytesLE(256))
+	fmt.Printf("257:%b\n", IntToBytesLE(257))
+	fmt.Printf("257:%b\n", IntToBytesLE(258))
 	// Byte three boundary
-	fmt.Printf("65535:%b\n", intToBytesLE(65535))
-	fmt.Printf("65536:%b\n", intToBytesLE(65536))
-	fmt.Printf("65537:%b\n", intToBytesLE(65537))
-	// 8 byte boundry
-	fmt.Printf("18446744073709551615:%b\n", intToBytesLE(18446744073709551615))
+	fmt.Printf("65535:%b\n", IntToBytesLE(65535))
+	fmt.Printf("65536:%b\n", IntToBytesLE(65536))
+	fmt.Printf("65537:%b\n", IntToBytesLE(65537))
+	// 8 byte boundary
+	fmt.Printf("18446744073709551615:%b\n", IntToBytesLE(18446744073709551615))
 
 	// Output:
 	// 0:[0]
@@ -34,6 +34,37 @@ func Example_intToBytesLE() {
 	// 257:[10 1]
 	// 65535:[11111111 11111111]
 	// 65536:[0 0 1]
+	// 65537:[1 0 1]
+	// 18446744073709551615:[11111111 11111111 11111111 11111111 11111111 11111111 11111111 11111111]
+}
+
+func Example_intToBytesBE() {
+	// Byte one boundary
+	fmt.Printf("0:%b\n", IntToBytesBE(0))
+	fmt.Printf("1:%b\n", IntToBytesBE(1))
+	fmt.Printf("2:%b\n", IntToBytesBE(2))
+	// Byte two boundary
+	fmt.Printf("255:%b\n", IntToBytesBE(255))
+	fmt.Printf("256:%b\n", IntToBytesBE(256))
+	fmt.Printf("257:%b\n", IntToBytesBE(257))
+	fmt.Printf("257:%b\n", IntToBytesBE(258))
+	// Byte three boundary
+	fmt.Printf("65535:%b\n", IntToBytesBE(65535))
+	fmt.Printf("65536:%b\n", IntToBytesBE(65536))
+	fmt.Printf("65537:%b\n", IntToBytesBE(65537))
+	// 8 byte boundary
+	fmt.Printf("18446744073709551615:%b\n", IntToBytesBE(18446744073709551615))
+
+	// Output:
+	// 0:[0]
+	// 1:[1]
+	// 2:[10]
+	// 255:[11111111]
+	// 256:[1 0]
+	// 257:[1 1]
+	// 257:[1 10]
+	// 65535:[11111111 11111111]
+	// 65536:[1 0 0]
 	// 65537:[1 0 1]
 	// 18446744073709551615:[11111111 11111111 11111111 11111111 11111111 11111111 11111111 11111111]
 }
@@ -58,6 +89,83 @@ func ExampleTree_Populate() {
 	//         "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4",
 	//         "sGYg2-Wl8uE4OSaYWk2v7pBj7pYNHrl0K-pxWG6_YDg",
 	//         "nO49t9F-tf96Os0Eab4bqhnVywHbqJkaGlNgAACoRRI"
+	//     ]
+	// }
+}
+
+// ExampleTree_Skip tests skipping in the tree. With a skip of 1, the branch
+// value should match ExampleTree_Populate starting at the second value.
+func ExampleTree_Skip() {
+	t := Tree{
+		Alg:        coze.SHA256,
+		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		DepthSizes: []int{3},
+		Skip:       1,
+	}
+	t.Populate()
+	fmt.Println(t)
+
+	// Output:
+	// {
+	//     "alg": "SHA-256",
+	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
+	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
+	//     "depth_sizes": [
+	//         3
+	//     ],
+	//     "skip": 1,
+	//     "branches": [
+	//         "sGYg2-Wl8uE4OSaYWk2v7pBj7pYNHrl0K-pxWG6_YDg",
+	//         "nO49t9F-tf96Os0Eab4bqhnVywHbqJkaGlNgAACoRRI"
+	//     ]
+	// }
+}
+
+// ExampleTree_Populate_zero tests a zero sized tree.
+func ExampleTree_Populate_zero() {
+	t := Tree{
+		Alg:        coze.SHA256,
+		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		DepthSizes: []int{0},
+		PathCalc:   true,
+	}
+	t.Populate()
+	fmt.Println(t)
+	// Output:
+	// {
+	//     "alg": "SHA-256",
+	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
+	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
+	//     "depth_sizes": [
+	//         0
+	//     ],
+	//     "path_calc": true
+	// }
+
+}
+
+// Tests the nonce 255/256, one byte to two bytes, boundary
+func ExampleTree_Populate_nonceBoundary() {
+	t := Tree{
+		Alg:        coze.SHA256,
+		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		DepthSizes: []int{257},
+		Skip:       255,
+	}
+	t.Populate()
+	fmt.Println(t)
+	// Output:
+	// {
+	//     "alg": "SHA-256",
+	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
+	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
+	//     "depth_sizes": [
+	//         257
+	//     ],
+	//     "skip": 255,
+	//     "branches": [
+	//         "1ILX9r1f7c3hK3Gwv_i5rmV-T7E4Sq0vjJsJE1J7SwM",
+	//         "DLbAu75AbsA7GV2cxe_KRJiJvdOu3Jkbxt-Xbow5-LU"
 	//     ]
 	// }
 }
