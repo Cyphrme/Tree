@@ -21,14 +21,17 @@ import (
 // ID: "Public" seed identifier.  The digest of the seed is the identifier, and
 // is not apart of Branch.
 //
-// DepthSizes: Size for each level of a recursive tree.  Assumes symmetrical
-// tree.  If needed a tree with different characteristics, build a custom tree
-// before calling Populate.
+// BLS: "Branch Level Sizes"  Size for each level of a recursive tree.  Populate
+// assumes a symmetrical tree.  The last level may be non-symmetrical if
+// MaxTotalLeaves is set.  The hypothetical "Branch level" variable, which would
+// be an integer representing how deep a branch is, is not stored as an explicit
+// variable but is known by the parent from the values of BLS.  A "Branch"
+// variable would be just the seed of a branch as named by the parent.
 //
 // Branches: The digest values of the branches based on root seed for this
-// level. Branch value become the seed for the children level.  At the edge of
-// the tree, Branches are the leaves for that tree.  Branches does not include
-// children branches.
+// level. Each branch value is the seed for the respective children.  At the
+// edge of the tree, Branches are termed "leaves" and have no further children
+// calculated.  Branches does not include children branches.
 //
 // Skip: Optional starting position for the first level.  Populates tree
 // starting at this position.
@@ -55,9 +58,10 @@ import (
 // are the last branch with no children.
 //
 // MaxTotalLeaves: (Breaks one-way design pattern) Normally left empty.  Total
-// leaves in the whole tree. (recursive data structure).  If DepthTotalLeaves is
-// empty, when using DepthSizes each branch will be populated fully based on the
-// last DepthSize.
+// leaves in the whole tree. (recursive data structure).  If TotalLeaves is
+// empty, each branch is fully populated  based on the BLS.  If TotalLeaves is
+// populated, the last populated branch may be unsymmetrical when the
+// MaxTotalLeaves limit is reached.
 //
 // ## Children
 //
@@ -66,10 +70,10 @@ import (
 // branch is used for the generation of a child tree, and thus becomes "private"
 // from that perspective.
 type Tree struct {
-	Alg        coze.HshAlg `json:"alg"`
-	Seed       coze.B64    `json:"seed"`
-	ID         coze.B64    `json:"id"`
-	DepthSizes []int       `json:"depth_sizes,omitempty"`
+	Alg  coze.HshAlg `json:"alg"`
+	Seed coze.B64    `json:"seed"`
+	ID   coze.B64    `json:"id"`
+	BLS  []int       `json:"branch_level_sizes,omitempty"`
 
 	Skip     int        `json:"skip,omitempty"`
 	Branches []coze.B64 `json:"branches,omitempty"`
@@ -103,13 +107,13 @@ func (t *Tree) Populate() (err error) {
 		return err
 	}
 
-	if len(t.DepthSizes) > 1 { // Recursive tree.
-		t.Children = make([]*Tree, t.DepthSizes[0])
-		for i := 0; i < t.DepthSizes[0]; i++ {
+	if len(t.BLS) > 1 { // Recursive tree.
+		t.Children = make([]*Tree, t.BLS[0])
+		for i := 0; i < t.BLS[0]; i++ {
 			tt := new(Tree)
 			tt.Alg = t.Alg
 			tt.Seed = t.Branches[i]
-			tt.DepthSizes = t.DepthSizes[1:]
+			tt.BLS = t.BLS[1:]
 			tt.MaxTotalLeaves = t.MaxTotalLeaves
 			tt.TotalLeaves = t.TotalLeaves
 			tt.PathCalc = t.PathCalc
@@ -169,9 +173,9 @@ func (t *Tree) GenTreeBranches() (err error) {
 		t.TotalLeaves = new(int)
 		*t.TotalLeaves = t.Skip
 	}
-	t.Branches = make([]coze.B64, t.DepthSizes[0]-t.Skip)
+	t.Branches = make([]coze.B64, t.BLS[0]-t.Skip)
 	t.Paths = make(B64MapP)
-	path := &[]coze.B64{t.Seed} // All leaves in a branch share the same Path (a pointer).  Leaves don't make a new LeafPath.
+	path := &[]coze.B64{t.Seed} // All children in a branch share the same Path (a pointer).
 
 	for i := 0; i < len(t.Branches); i++ {
 		//fmt.Printf("Current Leaves: %d\n", *t.TreeTotalLeaves)
@@ -184,7 +188,7 @@ func (t *Tree) GenTreeBranches() (err error) {
 			return err
 		}
 		t.Branches[i] = node
-		if len(t.DepthSizes) == 1 { // Increment Leaves. (Not branches)
+		if len(t.BLS) == 1 { // Increment Leaves. (Not branches)
 			//fmt.Printf("GenTreeBranches Edge of tree %t %+v \n", t.PathCalc, node)
 			*t.TotalLeaves++
 			if t.PathCalc {
@@ -272,11 +276,11 @@ func IntToBytesBE(i uint64) []byte {
 }
 
 // NewTreePopulated is a simple helper for making trees.
-func NewTreePopulated(alg coze.HshAlg, seed coze.B64, depthSizes []int) (*Tree, error) {
+func NewTreePopulated(alg coze.HshAlg, seed coze.B64, bls []int) (*Tree, error) {
 	t := Tree{
-		Alg:        alg,
-		Seed:       seed,
-		DepthSizes: depthSizes,
+		Alg:  alg,
+		Seed: seed,
+		BLS:  bls,
 	}
 	err := t.Populate()
 	return &t, err

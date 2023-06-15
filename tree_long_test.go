@@ -10,7 +10,7 @@ var tb = []byte(`{
 		"alg": "SHA-256",
 		"seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 		"id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-		"depth_sizes": [
+		"branch_level_sizes": [
 				1,
 				2,
 				2
@@ -96,7 +96,7 @@ var tb = []byte(`{
 						"alg": "SHA-256",
 						"seed": "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4",
 						"id": "FBrxbr4wZPHuGyM2Nl7gzoZTfZ-oLQP4pwKBpDxIIb0",
-						"depth_sizes": [
+						"branch_level_sizes": [
 								2,
 								2
 						],
@@ -164,7 +164,7 @@ var tb = []byte(`{
 										"alg": "SHA-256",
 										"seed": "0RJw1SSIXkrW3SID6eoANHq7Y1gB6ZNKo0nuC8pL_qM",
 										"id": "Nk6_zWOgHW7apqKoSIwZNst_yVryqQ--stm1jCKy6Cs",
-										"depth_sizes": [
+										"branch_level_sizes": [
 												2
 										],
 										"branches": [
@@ -197,7 +197,7 @@ var tb = []byte(`{
 										"alg": "SHA-256",
 										"seed": "yZJ4i_WzjbPHrbczNt2AW-zk1mDJE77ps98jN9fYaFA",
 										"id": "tsdM7o8IiUvtp-S3pmKzg-9iH18C8f9vFuHgmlDFJrc",
-										"depth_sizes": [
+										"branch_level_sizes": [
 												2
 										],
 										"branches": [
@@ -239,7 +239,7 @@ var tb = []byte(`{
 // 	t := Tree{
 // 		Alg:        coze.SHA256,
 // 		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-// 		DepthSizes: []int{1, 2, 2},
+// 		BLS: []int{1, 2, 2},
 // 		PathCalc:   true,
 // 	}
 // 	t.Populate()
@@ -263,7 +263,7 @@ var tb = []byte(`{
 // 	t := Tree{
 // 		Alg:        coze.SHA256,
 // 		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-// 		DepthSizes: []int{1, 2, 2},
+// 		BLS: []int{1, 2, 2},
 // 		PathCalc:   true,
 // 	}
 // 	t.Populate()
@@ -289,7 +289,7 @@ var tb = []byte(`{
 // // 	t := Tree{
 // // 		Alg:        coze.SHA256,
 // // 		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-// // 		DepthSizes: []int{1, 2, 2},
+// // 		BLS: []int{1, 2, 2},
 // // 		PathCalc:   true,
 // // 	}
 // // 	t.Populate()
@@ -301,7 +301,7 @@ var tb = []byte(`{
 // // 	//     "alg": "SHA-256",
 // // 	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 // // 	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-// // 	//     "depth_sizes": [
+// // 	//     "branch_level_sizes": [
 // // 	//         1,
 // // 	//         2,
 // // 	//         2
@@ -387,7 +387,7 @@ var tb = []byte(`{
 // // 	//             "alg": "SHA-256",
 // // 	//             "seed": "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4",
 // // 	//             "id": "FBrxbr4wZPHuGyM2Nl7gzoZTfZ-oLQP4pwKBpDxIIb0",
-// // 	//             "depth_sizes": [
+// // 	//             "branch_level_sizes": [
 // // 	//                 2,
 // // 	//                 2
 // // 	//             ],
@@ -455,7 +455,7 @@ var tb = []byte(`{
 // // 	//                     "alg": "SHA-256",
 // // 	//                     "seed": "0RJw1SSIXkrW3SID6eoANHq7Y1gB6ZNKo0nuC8pL_qM",
 // // 	//                     "id": "Nk6_zWOgHW7apqKoSIwZNst_yVryqQ--stm1jCKy6Cs",
-// // 	//                     "depth_sizes": [
+// // 	//                     "branch_level_sizes": [
 // // 	//                         2
 // // 	//                     ],
 // // 	//                     "branches": [
@@ -488,7 +488,7 @@ var tb = []byte(`{
 // // 	//                     "alg": "SHA-256",
 // // 	//                     "seed": "yZJ4i_WzjbPHrbczNt2AW-zk1mDJE77ps98jN9fYaFA",
 // // 	//                     "id": "tsdM7o8IiUvtp-S3pmKzg-9iH18C8f9vFuHgmlDFJrc",
-// // 	//                     "depth_sizes": [
+// // 	//                     "branch_level_sizes": [
 // // 	//                         2
 // // 	//                     ],
 // // 	//                     "branches": [

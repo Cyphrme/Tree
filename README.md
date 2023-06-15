@@ -30,9 +30,11 @@ relative to itself, a branch's digest is a seed.  While one tree may term a
 digest a seed, but from the parent tree's perspective, that seed is a branch.
 For a tree of size 1, the seed is a branch and a leaf.  
 
-**Depth sizes** denotes how large each branch level is from a starting seed. See
-the example below for depth sizes of `[5,100,7,30]`.  Depth sizes are ordered
-from the seed to the leaves.  This library assumes symmetrical trees.  
+**Branch level sizes** (BLS) denotes the size of each branch level.  The
+first integer is for the current level and subsequent integers are for each
+child level. See the example below for BLS of `[5,100,7,30]`.  Branch sizes are
+ordered from the seed to the leaves.  This library assumes symmetrical trees,
+although non-symmetrical trees are legitimate.  
  
 
 ### Structure
@@ -73,7 +75,7 @@ Because the nonce is sequential, any branch can quickly be calculated by
 position in the tree.   Note that the identity of the seed is not apart of the
 branch.
 
-### Example: Depth sizes [5,100,7,30]
+### Example: Branch level sizes [5,100,7,30]
 
 Branch levels: 4
 

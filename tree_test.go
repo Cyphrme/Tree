@@ -71,9 +71,9 @@ func Example_intToBytesBE() {
 
 func ExampleTree_Populate() {
 	t := Tree{
-		Alg:        coze.SHA256,
-		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes: []int{3},
+		Alg:  coze.SHA256,
+		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		BLS:  []int{3},
 	}
 	t.Populate()
 	fmt.Println(t)
@@ -82,7 +82,7 @@ func ExampleTree_Populate() {
 	//     "alg": "SHA-256",
 	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-	//     "depth_sizes": [
+	//     "branch_level_sizes": [
 	//         3
 	//     ],
 	//     "branches": [
@@ -97,10 +97,10 @@ func ExampleTree_Populate() {
 // value should match ExampleTree_Populate starting at the second value.
 func ExampleTree_Skip() {
 	t := Tree{
-		Alg:        coze.SHA256,
-		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes: []int{3},
-		Skip:       1,
+		Alg:  coze.SHA256,
+		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		BLS:  []int{3},
+		Skip: 1,
 	}
 	t.Populate()
 	fmt.Println(t)
@@ -110,7 +110,7 @@ func ExampleTree_Skip() {
 	//     "alg": "SHA-256",
 	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-	//     "depth_sizes": [
+	//     "branch_level_sizes": [
 	//         3
 	//     ],
 	//     "skip": 1,
@@ -124,10 +124,10 @@ func ExampleTree_Skip() {
 // ExampleTree_Populate_zero tests a zero sized tree.
 func ExampleTree_Populate_zero() {
 	t := Tree{
-		Alg:        coze.SHA256,
-		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes: []int{0},
-		PathCalc:   true,
+		Alg:      coze.SHA256,
+		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		BLS:      []int{0},
+		PathCalc: true,
 	}
 	t.Populate()
 	fmt.Println(t)
@@ -136,7 +136,7 @@ func ExampleTree_Populate_zero() {
 	//     "alg": "SHA-256",
 	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-	//     "depth_sizes": [
+	//     "branch_level_sizes": [
 	//         0
 	//     ],
 	//     "path_calc": true
@@ -147,10 +147,10 @@ func ExampleTree_Populate_zero() {
 // Tests the nonce 255/256, one byte to two bytes, boundary
 func ExampleTree_Populate_nonceBoundary() {
 	t := Tree{
-		Alg:        coze.SHA256,
-		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes: []int{257},
-		Skip:       255,
+		Alg:  coze.SHA256,
+		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		BLS:  []int{257},
+		Skip: 255,
 	}
 	t.Populate()
 	fmt.Println(t)
@@ -159,7 +159,7 @@ func ExampleTree_Populate_nonceBoundary() {
 	//     "alg": "SHA-256",
 	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-	//     "depth_sizes": [
+	//     "branch_level_sizes": [
 	//         257
 	//     ],
 	//     "skip": 255,
@@ -173,18 +173,18 @@ func ExampleTree_Populate_nonceBoundary() {
 // ExampleTree_PathCalc_len tests calculating paths.
 func ExampleTree_PathCalc_len() {
 	t := Tree{
-		Alg:        coze.SHA256,
-		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes: []int{1, 2, 2},
-		PathCalc:   true,
+		Alg:      coze.SHA256,
+		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		BLS:      []int{1, 2, 2},
+		PathCalc: true,
 	}
 	t.Populate()
 	fmt.Printf("Paths: %d, PathsID %d, Leaves: %d, LeavesID: %d\n", len(t.Paths), len(t.PathsID), len(t.Leaves), len(t.LeavesID))
 	t = Tree{
-		Alg:        coze.SHA256,
-		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes: []int{2},
-		PathCalc:   true,
+		Alg:      coze.SHA256,
+		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		BLS:      []int{2},
+		PathCalc: true,
 	}
 	t.Populate()
 	fmt.Printf("Paths: %d, PathsID %d, Leaves: %d, LeavesID: %d\n", len(t.Paths), len(t.PathsID), len(t.Leaves), len(t.LeavesID))
@@ -196,9 +196,9 @@ func ExampleTree_PathCalc_len() {
 
 func Example_big() {
 	t := Tree{
-		Alg:        coze.SHA256,
-		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes: []int{2, 2},
+		Alg:  coze.SHA256,
+		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		BLS:  []int{2, 2},
 	}
 	err := t.Populate()
 	if err != nil {
@@ -213,7 +213,7 @@ func Example_big() {
 	//     "alg": "SHA-256",
 	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-	//     "depth_sizes": [
+	//     "branch_level_sizes": [
 	//         2,
 	//         2
 	//     ],
@@ -226,7 +226,7 @@ func Example_big() {
 	//             "alg": "SHA-256",
 	//             "seed": "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4",
 	//             "id": "FBrxbr4wZPHuGyM2Nl7gzoZTfZ-oLQP4pwKBpDxIIb0",
-	//             "depth_sizes": [
+	//             "branch_level_sizes": [
 	//                 2
 	//             ],
 	//             "branches": [
@@ -238,7 +238,7 @@ func Example_big() {
 	//             "alg": "SHA-256",
 	//             "seed": "sGYg2-Wl8uE4OSaYWk2v7pBj7pYNHrl0K-pxWG6_YDg",
 	//             "id": "DG6CXAv4yPV4Ebs1igPW1uZspBO5e5QW9BmY7dJ_lv8",
-	//             "depth_sizes": [
+	//             "branch_level_sizes": [
 	//                 2
 	//             ],
 	//             "branches": [
@@ -256,7 +256,7 @@ func Example_max() {
 	t := Tree{
 		Alg:            coze.SHA256,
 		Seed:           coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-		DepthSizes:     []int{2, 2},
+		BLS:            []int{2, 2},
 		MaxTotalLeaves: &max,
 	}
 	err := t.Populate()
@@ -272,7 +272,7 @@ func Example_max() {
 	//     "alg": "SHA-256",
 	//     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
 	//     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-	//     "depth_sizes": [
+	//     "branch_level_sizes": [
 	//         2,
 	//         2
 	//     ],
@@ -285,7 +285,7 @@ func Example_max() {
 	//             "alg": "SHA-256",
 	//             "seed": "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4",
 	//             "id": "FBrxbr4wZPHuGyM2Nl7gzoZTfZ-oLQP4pwKBpDxIIb0",
-	//             "depth_sizes": [
+	//             "branch_level_sizes": [
 	//                 2
 	//             ],
 	//             "branches": [
@@ -297,7 +297,7 @@ func Example_max() {
 	//             "alg": "SHA-256",
 	//             "seed": "sGYg2-Wl8uE4OSaYWk2v7pBj7pYNHrl0K-pxWG6_YDg",
 	//             "id": "DG6CXAv4yPV4Ebs1igPW1uZspBO5e5QW9BmY7dJ_lv8",
-	//             "depth_sizes": [
+	//             "branch_level_sizes": [
 	//                 2
 	//             ],
 	//             "branches": [
@@ -364,7 +364,7 @@ func ExampleTree_jsonUnmarshal() {
     "alg": "SHA-256",
     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
     "id": "JArIzKVsB7CBjQ9zqB-Y1RbDdET2Bi-oyWADoVIUJ94",
-    "depth_sizes": [
+    "branch_level_sizes": [
         1,
         2
     ],
@@ -376,7 +376,7 @@ func ExampleTree_jsonUnmarshal() {
             "alg": "SHA-256",
             "seed": "JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4",
             "id": "FBrxbr4wZPHuGyM2Nl7gzoZTfZ-oLQP4pwKBpDxIIb0",
-            "depth_sizes": [
+            "branch_level_sizes": [
                 2
             ],
             "branches": [
