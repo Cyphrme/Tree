@@ -16,7 +16,6 @@ func Example_IntToBytesLE() {
 	fmt.Printf("255:%b\n", IntToBytesLE(255))
 	fmt.Printf("256:%b\n", IntToBytesLE(256))
 	fmt.Printf("257:%b\n", IntToBytesLE(257))
-	fmt.Printf("257:%b\n", IntToBytesLE(258))
 	// Byte three boundary
 	fmt.Printf("65535:%b\n", IntToBytesLE(65535))
 	fmt.Printf("65536:%b\n", IntToBytesLE(65536))
@@ -31,7 +30,6 @@ func Example_IntToBytesLE() {
 	// 255:[11111111]
 	// 256:[0 1]
 	// 257:[1 1]
-	// 257:[10 1]
 	// 65535:[11111111 11111111]
 	// 65536:[0 0 1]
 	// 65537:[1 0 1]
@@ -47,7 +45,6 @@ func Example_intToBytesBE() {
 	fmt.Printf("255:%b\n", IntToBytesBE(255))
 	fmt.Printf("256:%b\n", IntToBytesBE(256))
 	fmt.Printf("257:%b\n", IntToBytesBE(257))
-	fmt.Printf("257:%b\n", IntToBytesBE(258))
 	// Byte three boundary
 	fmt.Printf("65535:%b\n", IntToBytesBE(65535))
 	fmt.Printf("65536:%b\n", IntToBytesBE(65536))
@@ -62,7 +59,6 @@ func Example_intToBytesBE() {
 	// 255:[11111111]
 	// 256:[1 0]
 	// 257:[1 1]
-	// 257:[1 10]
 	// 65535:[11111111 11111111]
 	// 65536:[1 0 0]
 	// 65537:[1 0 1]
