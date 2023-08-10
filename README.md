@@ -41,7 +41,7 @@ although non-symmetrical trees are legitimate.
 Input seed is a random number of the same size as the digest algorithm's output,
 termed the hash size. The identity (id) of the seed is the digest of the seed.
 Branch digests are calculated by appending a sequential nonce, encoded as big
-endian bytes(s), to the seed and hashing.  
+endian byte(s), to the seed and hashing.  
 
 	S ─(S)────────► ID
 	│

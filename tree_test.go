@@ -311,7 +311,7 @@ func Example_max() {
 // a static string.
 func ExampleB64Map_jsonMarshal() {
 	lp := B64Map{
-		coze.SB64(coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): []coze.B64{
+		SB64(coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): []coze.B64{
 			coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 			coze.MustDecode("zVzgRU3WFpnrlVJAnI4ZU1Od4Agl5Zd4jIP79oubOW0")},
 	}
@@ -401,11 +401,11 @@ func ExampleNewTreePopulated_branches() {
 	// [JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4 sGYg2-Wl8uE4OSaYWk2v7pBj7pYNHrl0K-pxWG6_YDg nO49t9F-tf96Os0Eab4bqhnVywHbqJkaGlNgAACoRRI]
 }
 
-// ExampleTree_printSB64 ensures SB64 and B64Map prints out correctly.
+// ExampleTree_printSB64 ensures SB64 and B64Map/B64MapP prints out correctly.
 func ExampleTree_printSB64() {
 	t2 := Tree{
 		Paths: B64MapP{
-			coze.SB64(coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): &[]coze.B64{
+			SB64(coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): &[]coze.B64{
 				coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 				coze.MustDecode("zVzgRU3WFpnrlVJAnI4ZU1Od4Agl5Zd4jIP79oubOW0")},
 		},

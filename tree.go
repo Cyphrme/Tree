@@ -196,7 +196,7 @@ func (t *Tree) GenTreeBranches() (err error) {
 			}
 		}
 		if t.PathCalc {
-			t.Paths[coze.SB64(node)] = path
+			t.Paths[SB64(node)] = path
 		}
 	}
 
@@ -225,7 +225,7 @@ func (t *Tree) CalcPathsID() (err error) {
 			pathsId = append(pathsId, vid)
 		}
 
-		t.PathsID[coze.SB64(kid)] = &pathsId
+		t.PathsID[SB64(kid)] = &pathsId
 	}
 	return nil
 }
@@ -292,54 +292,4 @@ func (t Tree) String() (s string) {
 		return err.Error()
 	}
 	return string(b)
-}
-
-// B64Map is for maps with B64 as keys.  See notes on SB64.  Without this,
-// defining struct values as `map[SB64][]B64` will undesirably print map keys as
-// []byte and not B64 since json.Marshal looks for the key's primitive type if a
-// defined custom type for the top level struct type is not present.
-type B64Map map[coze.SB64][]coze.B64
-
-// MarshalJSON implements json.Marshaler.
-func (t B64Map) MarshalJSON() ([]byte, error) {
-	i := 0
-	l := len(t)
-	s := "{"
-	for k, v := range t {
-		i++
-		vj, err := coze.Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		s += `"` + fmt.Sprint(k) + `":` + string(vj)
-		if i != l {
-			s += ","
-		}
-	}
-	return []byte(s + "}"), nil
-}
-
-// B64Map is for maps with B64 as keys.  See notes on SB64.  Without this,
-// defining struct values as `map[SB64][]B64` will undesirably print map keys as
-// []byte and not B64 since json.Marshal looks for the key's primitive type if a
-// defined custom type for the top level struct type is not present.
-type B64MapP map[coze.SB64]*[]coze.B64
-
-// MarshalJSON implements json.Marshaler.
-func (t B64MapP) MarshalJSON() ([]byte, error) {
-	var s = "{"
-	var i = 0
-	var l = len(t)
-	for k, v := range t {
-		i++
-		vj, err := coze.Marshal(v)
-		if err != nil {
-			return nil, err
-		}
-		s += "\"" + fmt.Sprint(k) + "\":" + string(vj)
-		if i != l {
-			s += ","
-		}
-	}
-	return []byte(s + "}"), nil
 }
