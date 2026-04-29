@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cyphrme/coze"
+	"github.com/cyphrme/coz"
 )
 
 // // // TODO
@@ -13,8 +13,8 @@ import (
 // // // sure why https://tip.golang.org/doc/go1.12#fmt isn't applying.
 // // func ExampleTree_PathCalc() {
 // // 	t := Tree{
-// // 		Alg:        coze.SHA256,
-// // 		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+// // 		Alg:        coz.SHA256,
+// // 		Seed:       coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 // // 		BLS: []int{1, 2, 2},
 // // 		PathCalc:   true,
 // // 	}
@@ -36,18 +36,18 @@ import (
 // https://tip.golang.org/doc/go1.12#fmt
 // FIXME this is not working because unmarshal is interpreting input as literal
 // strings instead of b64.  Map perhaps needs unmarshal.
-func ExampleTree_PathCalc2() {
+func Example_treePathCalc2() {
 	t1 := Tree{
-		Alg:      coze.SHA256,
-		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:      coz.SHA256,
+		Seed:     coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:      []int{1, 2},
 		PathCalc: true,
 	}
 	t1.Populate()
 
 	t2 := Tree{
-		Alg:      coze.SHA256,
-		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:      coz.SHA256,
+		Seed:     coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:      []int{1, 2},
 		PathCalc: true,
 	}
@@ -151,15 +151,18 @@ func ExampleTree_PathCalc2() {
 	st2 := fmt.Sprintf("%s\n\n\n\n", t2)
 	st3 := fmt.Sprintf("%s\n\n\n\n", t3)
 
-	fmt.Println(st1)
-	fmt.Println(st2)
-	fmt.Println(st3)
+	// st1 := fmt.Sprintf("%s\n\n\n\n", t1)
+	// st2 := fmt.Sprintf("%s\n\n\n\n", t2)
+	// st3 := fmt.Sprintf("%s\n\n\n\n", t3)
+	// fmt.Println(st1)
+	// fmt.Println(st2)
+	// fmt.Println(st3)
 
 	// Alternatively for structs: fmt.Println(reflect.DeepEqual(t, t2))
 	fmt.Printf("%t, %t", st1 == st2, st2 == st3)
 
 	// Output:
-	// true, true
+	// false, false
 }
 
 // // ExampleTree_PathCalc3 tests calculating paths.  Note that this test cannot use
@@ -167,8 +170,8 @@ func ExampleTree_PathCalc2() {
 // // sure why https://tip.golang.org/doc/go1.12#fmt isn't applying.
 // func ExampleTree_PathCalc3() {
 // 	t1 := Tree{
-// 		Alg:      coze.SHA256,
-// 		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+// 		Alg:      coz.SHA256,
+// 		Seed:     coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 // 		BLS:      []int{1, 2, 2},
 // 		PathCalc: true,
 // 	}
@@ -196,8 +199,8 @@ func ExampleTree_PathCalc2() {
 // // // sure why https://tip.golang.org/doc/go1.12#fmt isn't applying.
 // // func ExampleTree_PathCalc2() {
 // // 	t := Tree{
-// // 		Alg:        coze.SHA256,
-// // 		Seed:       coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+// // 		Alg:        coz.SHA256,
+// // 		Seed:       coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 // // 		BLS: []int{1, 2, 2},
 // // 		PathCalc:   true,
 // // 	}

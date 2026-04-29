@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cyphrme/coze"
+	"github.com/cyphrme/coz"
 )
 
 // SB64 is useful for B64 map keys. Idiomatically, map key type should be `B64`,
@@ -24,7 +24,7 @@ type SB64 string
 
 // String implements fmt.Stringer
 func (b SB64) String() string {
-	return coze.B64(b).String()
+	return coz.B64(b).String()
 }
 
 // GoString implements fmt.GoString
@@ -39,7 +39,7 @@ func (t *SB64) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	b64 := coze.B64(bb)
+	b64 := coz.B64(bb)
 	*t = SB64(b64.String())
 
 	return nil
@@ -49,7 +49,7 @@ func (t *SB64) UnmarshalJSON(b []byte) error {
 // defining struct values as `map[SB64][]B64` will undesirably print map keys as
 // []byte and not B64 since json.Marshal looks for the key's primitive type if a
 // defined custom type for the top level struct type is not present.
-type B64Map map[SB64][]coze.B64
+type B64Map map[SB64][]coz.B64
 
 // MarshalJSON implements json.Marshaler.
 func (t B64Map) MarshalJSON() ([]byte, error) {
@@ -58,7 +58,7 @@ func (t B64Map) MarshalJSON() ([]byte, error) {
 	s := "{"
 	for k, v := range t {
 		i++
-		vj, err := coze.Marshal(v)
+		vj, err := coz.Marshal(v)
 		if err != nil {
 			return nil, err
 		}
@@ -83,11 +83,11 @@ func (t B64Map) MarshalJSON() ([]byte, error) {
 // }
 
 // B64Map is for maps with B64 as keys.  See notes on SB64.  Without this,
-// defining struct values as `map[tree.SB64][]coze.B64` will undesirably print
+// defining struct values as `map[tree.SB64][]coz.B64` will undesirably print
 // map keys as []byte and not B64 since json.Marshal looks for the key's
 // primitive type if a defined custom type for the top level struct type is not
 // present.
-type B64MapP map[SB64]*[]coze.B64
+type B64MapP map[SB64]*[]coz.B64
 
 // MarshalJSON implements json.Marshaler.
 func (t B64MapP) MarshalJSON() ([]byte, error) {
@@ -96,7 +96,7 @@ func (t B64MapP) MarshalJSON() ([]byte, error) {
 	var l = len(t)
 	for k, v := range t {
 		i++
-		vj, err := coze.Marshal(v)
+		vj, err := coz.Marshal(v)
 		if err != nil {
 			return nil, err
 		}

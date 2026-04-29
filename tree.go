@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/cyphrme/coze"
+	"github.com/cyphrme/coz"
 )
 
 // See tree/README.md documentation.
@@ -70,19 +70,19 @@ import (
 // branch is used for the generation of a child tree, and thus becomes "private"
 // from that perspective.
 type Tree struct {
-	Alg  coze.HshAlg `json:"alg"`
-	Seed coze.B64    `json:"seed"`
-	ID   coze.B64    `json:"id"`
+	Alg  coz.HshAlg `json:"alg"`
+	Seed coz.B64    `json:"seed"`
+	ID   coz.B64    `json:"id"`
 	BLS  []int       `json:"branch_level_sizes,omitempty"`
 
 	Skip     int        `json:"skip,omitempty"`
-	Branches []coze.B64 `json:"branches,omitempty"`
+	Branches []coz.B64 `json:"branches,omitempty"`
 
 	PathCalc bool       `json:"path_calc,omitempty"`
 	Paths    B64MapP    `json:"paths,omitempty"`
 	PathsID  B64MapP    `json:"paths_id,omitempty"`
-	Leaves   []coze.B64 `json:"leaves,omitempty"`
-	LeavesID []coze.B64 `json:"leaves_id,omitempty"`
+	Leaves   []coz.B64 `json:"leaves,omitempty"`
+	LeavesID []coz.B64 `json:"leaves_id,omitempty"`
 
 	// Stats and internal variables.
 	TotalLeaves    *int `json:"-"` // For whole tree, up and down.
@@ -126,7 +126,7 @@ func (t *Tree) Populate() (err error) {
 
 			if t.PathCalc {
 				t.Leaves = append(t.Leaves, tt.Leaves...) // Add leaves from branch to parent's leaves.
-				ps := []coze.B64{t.Seed}                  // Add parent to each child's path.
+				ps := []coz.B64{t.Seed}                  // Add parent to each child's path.
 				for k, v := range tt.Paths {              // TODO need to make new unique paths, not all paths.(Use the pointer)
 					paths := append(ps, *v...)
 					t.Paths[k] = &paths
@@ -135,8 +135,8 @@ func (t *Tree) Populate() (err error) {
 		}
 	}
 
-	t.LeavesID = make([]coze.B64, 0, len(t.Leaves)) // Preallocate for performance.
-	for _, v := range t.Leaves {                    // TODO use []*[]coze.B64 for memory/processing efficiency.
+	t.LeavesID = make([]coz.B64, 0, len(t.Leaves)) // Preallocate for performance.
+	for _, v := range t.Leaves {                    // TODO use []*[]coz.B64 for memory/processing efficiency.
 		id, err := Identity(t.Alg, v)
 		if err != nil {
 			return err
@@ -173,9 +173,9 @@ func (t *Tree) GenTreeBranches() (err error) {
 		t.TotalLeaves = new(int)
 		*t.TotalLeaves = t.Skip
 	}
-	t.Branches = make([]coze.B64, t.BLS[0]-t.Skip)
+	t.Branches = make([]coz.B64, t.BLS[0]-t.Skip)
 	t.Paths = make(B64MapP)
-	path := &[]coze.B64{t.Seed} // All children in a branch share the same Path (a pointer).
+	path := &[]coz.B64{t.Seed} // All children in a branch share the same Path (a pointer).
 
 	for i := 0; i < len(t.Branches); i++ {
 		//fmt.Printf("Current Leaves: %d\n", *t.TreeTotalLeaves)
@@ -211,12 +211,12 @@ func (t *Tree) CalcPathsID() (err error) {
 	}
 	t.PathsID = make(B64MapP)
 	for k, v := range t.Paths {
-		kid, err := Identity(t.Alg, coze.B64(k))
+		kid, err := Identity(t.Alg, coz.B64(k))
 		if err != nil {
 			return err
 		}
 
-		var pathsId []coze.B64
+		var pathsId []coz.B64
 		for _, v1 := range *v {
 			vid, err := Identity(t.Alg, v1)
 			if err != nil {
@@ -233,15 +233,15 @@ func (t *Tree) CalcPathsID() (err error) {
 // Identity is the identity function for a seed.  `S─(S)─► ID`  The result of
 // the identity function is the "identifier".  All nodes are seeds from a single
 // tree perspective.
-func Identity(alg coze.HshAlg, b coze.B64) (coze.B64, error) {
-	return coze.Hash(alg, b)
+func Identity(alg coz.HshAlg, b coz.B64) (coz.B64, error) {
+	return coz.Hash(alg, b)
 }
 
 // Branch is the branch function for a seed.  `S─(S||byte 0)──► S0`  The result
 // of this branch function is the "branch seed", which is the leaf at the tip of
 // the tree.
-func Branch(alg coze.HshAlg, dig coze.B64, i int) (coze.B64, error) {
-	return coze.Hash(alg, append(dig, IntToBytesBE(uint64(i))...))
+func Branch(alg coz.HshAlg, dig coz.B64, i int) (coz.B64, error) {
+	return coz.Hash(alg, append(dig, IntToBytesBE(uint64(i))...))
 }
 
 // IntToBytesLE is like binary.LittleEndian.PutUint64 except it does not include
@@ -276,7 +276,7 @@ func IntToBytesBE(i uint64) []byte {
 }
 
 // NewTreePopulated is a simple helper for making trees.
-func NewTreePopulated(alg coze.HshAlg, seed coze.B64, bls []int) (*Tree, error) {
+func NewTreePopulated(alg coz.HshAlg, seed coz.B64, bls []int) (*Tree, error) {
 	t := Tree{
 		Alg:  alg,
 		Seed: seed,
@@ -287,7 +287,7 @@ func NewTreePopulated(alg coze.HshAlg, seed coze.B64, bls []int) (*Tree, error) 
 }
 
 func (t Tree) String() (s string) {
-	b, err := coze.MarshalPretty(t)
+	b, err := coz.MarshalPretty(t)
 	if err != nil {
 		return err.Error()
 	}

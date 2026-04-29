@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/cyphrme/coze"
+	"github.com/cyphrme/coz"
 )
 
-func Example_IntToBytesLE() {
+func Example_intToBytesLE() {
 	// Byte one boundary
 	fmt.Printf("0:%b\n", IntToBytesLE(0))
 	fmt.Printf("1:%b\n", IntToBytesLE(1))
@@ -67,8 +67,8 @@ func Example_intToBytesBE() {
 
 func ExampleTree_Populate() {
 	t := Tree{
-		Alg:  coze.SHA256,
-		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:  coz.SHA256,
+		Seed: coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:  []int{3},
 	}
 	t.Populate()
@@ -93,8 +93,8 @@ func ExampleTree_Populate() {
 // value should match ExampleTree_Populate starting at the second value.
 func ExampleTree_Skip() {
 	t := Tree{
-		Alg:  coze.SHA256,
-		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:  coz.SHA256,
+		Seed: coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:  []int{3},
 		Skip: 1,
 	}
@@ -120,8 +120,8 @@ func ExampleTree_Skip() {
 // ExampleTree_Populate_zero tests a zero sized tree.
 func ExampleTree_Populate_zero() {
 	t := Tree{
-		Alg:      coze.SHA256,
-		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:      coz.SHA256,
+		Seed:     coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:      []int{0},
 		PathCalc: true,
 	}
@@ -143,8 +143,8 @@ func ExampleTree_Populate_zero() {
 // Tests the nonce 255/256, one byte to two bytes, boundary
 func ExampleTree_Populate_nonceBoundary() {
 	t := Tree{
-		Alg:  coze.SHA256,
-		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:  coz.SHA256,
+		Seed: coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:  []int{257},
 		Skip: 255,
 	}
@@ -169,16 +169,16 @@ func ExampleTree_Populate_nonceBoundary() {
 // ExampleTree_PathCalc_len tests calculating paths.
 func ExampleTree_PathCalc_len() {
 	t := Tree{
-		Alg:      coze.SHA256,
-		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:      coz.SHA256,
+		Seed:     coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:      []int{1, 2, 2},
 		PathCalc: true,
 	}
 	t.Populate()
 	fmt.Printf("Paths: %d, PathsID %d, Leaves: %d, LeavesID: %d\n", len(t.Paths), len(t.PathsID), len(t.Leaves), len(t.LeavesID))
 	t = Tree{
-		Alg:      coze.SHA256,
-		Seed:     coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:      coz.SHA256,
+		Seed:     coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:      []int{2},
 		PathCalc: true,
 	}
@@ -192,8 +192,8 @@ func ExampleTree_PathCalc_len() {
 
 func Example_big() {
 	t := Tree{
-		Alg:  coze.SHA256,
-		Seed: coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:  coz.SHA256,
+		Seed: coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:  []int{2, 2},
 	}
 	err := t.Populate()
@@ -250,8 +250,8 @@ func Example_big() {
 func Example_max() {
 	max := 3
 	t := Tree{
-		Alg:            coze.SHA256,
-		Seed:           coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+		Alg:            coz.SHA256,
+		Seed:           coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
 		BLS:            []int{2, 2},
 		MaxTotalLeaves: &max,
 	}
@@ -311,12 +311,12 @@ func Example_max() {
 // a static string.
 func ExampleB64Map_jsonMarshal() {
 	lp := B64Map{
-		SB64(coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): []coze.B64{
-			coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-			coze.MustDecode("zVzgRU3WFpnrlVJAnI4ZU1Od4Agl5Zd4jIP79oubOW0")},
+		SB64(coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): []coz.B64{
+			coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+			coz.MustDecode("zVzgRU3WFpnrlVJAnI4ZU1Od4Agl5Zd4jIP79oubOW0")},
 	}
 
-	b, err := coze.MarshalPretty(lp)
+	b, err := coz.MarshalPretty(lp)
 	if err != nil {
 		panic(err)
 	}
@@ -355,7 +355,7 @@ func ExampleB64Map_jsonUnmarshal() {
 // ExampleTree_jsonUnmarshal tests tree JSON unmarshalling.
 func ExampleTree_jsonUnmarshal() {
 	// Generate the following using:
-	// ts, _ := NewTreePopulated(coze.SHA256, coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"), []int{1, 2})
+	// ts, _ := NewTreePopulated(coz.SHA256, coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"), []int{1, 2})
 	tb := []byte(`{
     "alg": "SHA-256",
     "seed": "RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno",
@@ -395,7 +395,7 @@ func ExampleTree_jsonUnmarshal() {
 }
 
 func ExampleNewTreePopulated_branches() {
-	t, _ := NewTreePopulated(coze.SHA256, coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"), []int{3})
+	t, _ := NewTreePopulated(coz.SHA256, coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"), []int{3})
 	fmt.Println(t.Branches)
 	// Output:
 	// [JmXqHaRJWmRD8qLK6yPyAfH-jiJ9EDJXQsUnAwO5ot4 sGYg2-Wl8uE4OSaYWk2v7pBj7pYNHrl0K-pxWG6_YDg nO49t9F-tf96Os0Eab4bqhnVywHbqJkaGlNgAACoRRI]
@@ -405,9 +405,9 @@ func ExampleNewTreePopulated_branches() {
 func ExampleTree_printSB64() {
 	t2 := Tree{
 		Paths: B64MapP{
-			SB64(coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): &[]coze.B64{
-				coze.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
-				coze.MustDecode("zVzgRU3WFpnrlVJAnI4ZU1Od4Agl5Zd4jIP79oubOW0")},
+			SB64(coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno")): &[]coz.B64{
+				coz.MustDecode("RpMM4_lU6jCj3asZEtIFyYqPjC2L6mlucl7VGMvAuno"),
+				coz.MustDecode("zVzgRU3WFpnrlVJAnI4ZU1Od4Agl5Zd4jIP79oubOW0")},
 		},
 	}
 	fmt.Printf("%s\n", t2)
